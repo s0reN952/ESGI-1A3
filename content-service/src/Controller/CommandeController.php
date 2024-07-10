@@ -1,5 +1,4 @@
 <?php
-// src/Controller/CommandeController.php
 
 namespace App\Controller;
 
@@ -11,21 +10,17 @@ use App\Entity\Commande;
 
 class CommandeController extends AbstractController
 {
-    /**
-     * @Route("/commandes", name="commande_list", methods={"GET"})
-     */
+
     public function list(): Response
     {
         $commandes = $this->getDoctrine()->getRepository(Commande::class)->findAll();
         
-        // Serializer for transforming entities to JSON
+  
         $response = $this->json($commandes, 200, [], ['groups' => 'commande']);
         return $response;
     }
 
-    /**
-     * @Route("/commandes", name="commande_create", methods={"POST"})
-     */
+ 
     public function create(Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -43,9 +38,7 @@ class CommandeController extends AbstractController
         return $this->json($commande, 201, [], ['groups' => 'commande']);
     }
 
-    /**
-     * @Route("/commandes/{id}", name="commande_update", methods={"PUT"})
-     */
+
     public function update($id, Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -69,9 +62,7 @@ class CommandeController extends AbstractController
         return $this->json($commande, 200, [], ['groups' => 'commande']);
     }
 
-    /**
-     * @Route("/commandes/{id}", name="commande_delete", methods={"DELETE"})
-     */
+
     public function delete($id): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
