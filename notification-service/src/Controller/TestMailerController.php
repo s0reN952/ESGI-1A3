@@ -7,20 +7,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Psr\Log\LoggerInterface;
 
 class TestMailerController extends AbstractController
 {
     #[Route('/test-mailer', name: 'test_mailer')]
-    public function index(MailerInterface $mailer): Response
+    public function index(MailerInterface $mailer, LoggerInterface $logger): Response
     {
+        $logger->info('Preparing email');
+
         $email = (new Email())
-            ->from('100.moonnaie@gmail.com')  // Remplacez par votre adresse email d'expéditeur
-            ->to('ilyas.salek@gmail.com') // Remplacez par l'adresse email du destinataire
+            ->from('100.moonnaie@gmail.com')  
+            ->to('ilyas.salek@gmail.com') 
             ->subject('Test from Symfony Mailer!')
             ->text('This is a test email sent from Symfony.');
 
-        $mailer->send($email);
-
-        return new Response('Email sent successfully!');
+        try {
+            $mailer->send($email);
+            $logger->info('Email sent successfully');
+            return new Response('Email sent successfully!');
+        } catch (\Exception $e) {
+            $logger->error('Failed to send email: ' . $e->getMessage());
+            return new Response('Failed to send email: ' . $e->getMessage(), 500);
+        }
     }
 }
